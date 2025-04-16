@@ -11,14 +11,15 @@ public class JsonReader {
                 String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
                 String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
 
-                Map<String, String> jsonMap = parseJson(content2);
+                Map<String, String> jsonMap = parseJson(content1);
 
-                    for (String key : jsonMap.keySet()) {
-                        String value = jsonMap.get(key);
-                        System.out.println(key + ": "+value);
-                    }
+                    //for (String key : jsonMap.keySet()) {
+                   //     String value = jsonMap.get(key);
+                   //     System.out.println(key + ": "+value);
+                   // }
 
                 validateJson(content2);
+                searchKey(jsonMap,"name");
 
 
             } catch (IOException e) {
@@ -61,6 +62,17 @@ public class JsonReader {
                System.out.println("Invalid Json format at row : "+pair);
             }
 
+        }
+    }
+
+    public static void searchKey(Map jsonMap , String keyName)
+    {
+        for (Object key : jsonMap.keySet()) {
+            if(keyName.equals(key.toString()))
+            {
+            Object value = jsonMap.get(keyName);
+            System.out.println(key.toString() + ": "+value.toString());
+            }
         }
     }
 
