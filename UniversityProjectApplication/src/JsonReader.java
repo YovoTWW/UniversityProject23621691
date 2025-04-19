@@ -147,7 +147,7 @@ public class JsonReader {
             }
             byte[] content = Files.readAllBytes(pathFrom);
             Files.write(pathTo,content);
-            Files.delete(pathFrom);
+            Files.write(pathFrom,new byte[0]);
         }
         catch (IOException e) {
             System.out.println("Грешка при преместването на информация.");
