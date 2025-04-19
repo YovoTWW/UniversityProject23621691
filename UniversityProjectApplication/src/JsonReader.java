@@ -11,7 +11,7 @@ public class JsonReader {
                 String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
                 String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
 
-                Map<String, String> jsonMap = parseJson(content1);
+                Map<String, String> jsonMap = parseJson(content2);
 
                     //for (String key : jsonMap.keySet()) {
                    //     String value = jsonMap.get(key);
@@ -19,6 +19,7 @@ public class JsonReader {
                    // }
 
                 validateJson(content2);
+                setPath(jsonMap,"name","Kiril Petrov");
                 searchKey(jsonMap,"name");
 
 
@@ -65,16 +66,27 @@ public class JsonReader {
         }
     }
 
-    public static void searchKey(Map jsonMap , String keyName)
+    public static void searchKey(Map<String,String> jsonMap , String keyName)
     {
-        for (Object key : jsonMap.keySet()) {
-            if(keyName.equals(key.toString()))
+        for (String key : jsonMap.keySet()) {
+            if(keyName.equals(key))
             {
-            Object value = jsonMap.get(keyName);
-            System.out.println(key.toString() + ": "+value.toString());
+            String value = jsonMap.get(keyName);
+            System.out.println(key+ ": "+value);
             }
         }
     }
+
+    public static void setPath(Map<String,String> jsonMap,String keyName , String newValue)
+    {
+        if(jsonMap.containsKey(keyName)){
+            jsonMap.put(keyName,newValue);
+        }
+        else {
+            System.out.println("Ключ с име : '" + keyName + "' не беше намерен.");
+        }
+    }
+
 
 
 }
