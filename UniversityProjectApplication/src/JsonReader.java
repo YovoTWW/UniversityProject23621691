@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -10,20 +11,28 @@ public class JsonReader {
             try {
                 String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
                 String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
+                Path path1 = Paths.get("src/JSON_Files/data.json");
 
-                Map<String, String> jsonMap = parseJson(content2);
+                Map<String, String> jsonMap = parseJson(content1);
 
-                    //for (String key : jsonMap.keySet()) {
-                   //     String value = jsonMap.get(key);
-                   //     System.out.println(key + ": "+value);
-                   // }
+                    for (String key : jsonMap.keySet()) {
+                       String value = jsonMap.get(key);
+                       System.out.println(key + ": "+value);
+                    }
+                String newContent = "{\n" +
+                        "  \"name\": \"Yovo Nedelchev\",\n" +
+                        "  \"age\": 21,\n" +
+                        "  \"city\": \"Varna\",\n" +
+                        "  \"country\": \"Bulgaria\"\n" +
+                        "}";
 
-                validateJson(content2);
-                setPath(jsonMap,"name","Kiril Petrov");
-                createPath(jsonMap,"city","Sofia");
-                deletePath(jsonMap,"name");
-                searchKey(jsonMap,"name");
-                searchKey(jsonMap,"city");
+                //set(path1,newContent);
+                //validate(content2);
+                //set(jsonMap,"name","Kiril Petrov");
+                //createPath(jsonMap,"city","Sofia");
+                //deletePath(jsonMap,"name");
+                //search(jsonMap,"name");
+                //search(jsonMap,"city");
 
 
             } catch (IOException e) {
@@ -54,7 +63,7 @@ public class JsonReader {
         return map;
     }
 
-    public static void validateJson(String json){
+    public static void validate(String json){
 
         json = json.trim().replaceAll("[{}\"]", "");
         String[] pairs = json.split(",");
@@ -69,7 +78,7 @@ public class JsonReader {
         }
     }
 
-    public static void searchKey(Map<String,String> jsonMap , String keyName)
+    public static void search(Map<String,String> jsonMap , String keyName)
     {
         for (String key : jsonMap.keySet()) {
             if(keyName.equals(key))
@@ -80,33 +89,52 @@ public class JsonReader {
         }
     }
 
-    public static void setPath(Map<String,String> jsonMap,String keyName , String newValue)
+    public static void set(Path filePath , String newContent)
     {
-        if(jsonMap.containsKey(keyName)){
+        /*if(jsonMap.containsKey(keyName)){
             jsonMap.put(keyName,newValue);
         }
         else {
             System.out.println("Ключ с име : '" + keyName + "' не беше намерен.");
+        }*/
+        if (Files.exists(filePath)) {
+            try {
+                Files.write(filePath, newContent.getBytes());
+                System.out.println("JSON файлът беше пренаписан успешно.");
+            } catch (IOException e) {
+                System.out.println("Грешка при презаписването на JSON файлът.");
+            }
+        }
+        else{
+            System.out.println("JSON файлът с такъв път не е намерен.");
         }
     }
 
-    public static void createPath(Map<String,String> jsonMap,String keyName , String newValue){
-        if(jsonMap.containsKey(keyName)){
-            System.out.println("Ключ с име : '" + keyName + "' вече съществува.");
+    public static void create(Path filePath , String newContent){
+        if (Files.exists(filePath)) {
+            System.out.println("JSON файлът с тавък път вече съществува.");
         }
         else {
-            jsonMap.put(keyName,newValue);
+            try {
+                Files.write(filePath, newContent.getBytes());
+                System.out.println("JSON файлът беше създаден успешно.");
+            } catch (IOException e) {
+                System.out.println("Грешка при създаването на JSON файлът.");
+            }
         }
     }
 
-    public static void deletePath(Map<String,String> jsonMap,String keyName){
-        if(jsonMap.containsKey(keyName)){
-            jsonMap.remove(keyName);
+    public static void delete(Path filePath ){
+        if (Files.exists(filePath)) {
+            try {
+                Files.delete(filePath);
+                System.out.println("JSON файлът беше изтрит успешно.");
+            } catch (IOException e) {
+                System.out.println("Грешка при изтриването на JSON файлът.");
+            }
+        } else {
+            System.out.println("JSON файлът с такъв път не е намерен.");
         }
-        else {
-            System.out.println("Ключ с име : '" + keyName + "' не беше намерен.");
-        }
-
     }
 
 }

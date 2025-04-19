@@ -1,5 +1,6 @@
 {
-    "name": "Yovo Nedelchev",
-    "age": 21,
-    "city": "Varna"
+  "name": "Yovo Nedelchev",
+  "age": 21,
+  "city": "Varna",
+  "country": "Bulgaria"
 }
