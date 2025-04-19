@@ -11,21 +11,23 @@ public class JsonReader {
             try {
                 String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
                 String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
+                String content3 = new  String(Files.readAllBytes(Paths.get("src/JSON_Files/created.json")));
                 Path path1 = Paths.get("src/JSON_Files/data.json");
 
-                Map<String, String> jsonMap = parseJson(content1);
+                Map<String, String> jsonMap = parseJson(content3);
 
                     for (String key : jsonMap.keySet()) {
                        String value = jsonMap.get(key);
                        System.out.println(key + ": "+value);
                     }
                 String newContent = "{\n" +
-                        "  \"name\": \"Yovo Nedelchev\",\n" +
-                        "  \"age\": 21,\n" +
-                        "  \"city\": \"Varna\",\n" +
+                        "  \"name\": \"Vasil Bojilov\",\n" +
+                        "  \"age\": 55,\n" +
+                        "  \"city\": \"Burgas\",\n" +
                         "  \"country\": \"Bulgaria\"\n" +
                         "}";
 
+                    //create(Paths.get("src/JSON_Files/created.json"),newContent);
                 //set(path1,newContent);
                 //validate(content2);
                 //set(jsonMap,"name","Kiril Petrov");
@@ -134,6 +136,21 @@ public class JsonReader {
             }
         } else {
             System.out.println("JSON файлът с такъв път не е намерен.");
+        }
+    }
+
+    public static void move(Path pathFrom , Path pathTo){
+        try{
+            if(!Files.exists(pathFrom) || !Files.exists(pathTo)){
+                System.out.println("JSON файлът с такъв път не е намерен.");
+                return;
+            }
+            byte[] content = Files.readAllBytes(pathFrom);
+            Files.write(pathTo,content);
+            Files.delete(pathFrom);
+        }
+        catch (IOException e) {
+            System.out.println("Грешка при преместването на информация.");
         }
     }
 
