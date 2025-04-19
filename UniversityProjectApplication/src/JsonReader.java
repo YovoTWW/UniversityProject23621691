@@ -20,7 +20,10 @@ public class JsonReader {
 
                 validateJson(content2);
                 setPath(jsonMap,"name","Kiril Petrov");
+                createPath(jsonMap,"city","Sofia");
+                deletePath(jsonMap,"name");
                 searchKey(jsonMap,"name");
+                searchKey(jsonMap,"city");
 
 
             } catch (IOException e) {
@@ -87,6 +90,23 @@ public class JsonReader {
         }
     }
 
+    public static void createPath(Map<String,String> jsonMap,String keyName , String newValue){
+        if(jsonMap.containsKey(keyName)){
+            System.out.println("Ключ с име : '" + keyName + "' вече съществува.");
+        }
+        else {
+            jsonMap.put(keyName,newValue);
+        }
+    }
 
+    public static void deletePath(Map<String,String> jsonMap,String keyName){
+        if(jsonMap.containsKey(keyName)){
+            jsonMap.remove(keyName);
+        }
+        else {
+            System.out.println("Ключ с име : '" + keyName + "' не беше намерен.");
+        }
+
+    }
 
 }
