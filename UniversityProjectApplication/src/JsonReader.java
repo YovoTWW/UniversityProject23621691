@@ -13,6 +13,8 @@ public class JsonReader {
                 String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
                 String content3 = new  String(Files.readAllBytes(Paths.get("src/JSON_Files/created.json")));
                 Path path1 = Paths.get("src/JSON_Files/data.json");
+                Path path = null;
+
 
                 Map<String, String> jsonMap = parseJson(content3);
 
@@ -26,7 +28,8 @@ public class JsonReader {
                         "  \"city\": \"Burgas\",\n" +
                         "  \"country\": \"Bulgaria\"\n" +
                         "}";
-
+                open(path,"data.json");
+                close(path,"data.json");
                     //create(Paths.get("src/JSON_Files/created.json"),newContent);
                 //set(path1,newContent);
                 //validate(content2);
@@ -154,4 +157,37 @@ public class JsonReader {
         }
     }
 
+    public static void open(Path path , String fileName){
+        if(path == null) {
+            path = Paths.get("src/JSON_Files/" + fileName);
+        }
+        else{
+            System.out.println("Дръг файл е отворен . Затворете отвореният файл , за да може да отворите друг файл.");
+            return;
+        }
+
+        if (Files.exists(path) && Files.isReadable(path)) {
+            try {
+                String content = Files.readString(path);  // Opens and reads the file
+                System.out.println("Файлът е успешно отворен");
+                System.out.println("Съдържание:\n" + content);
+            } catch (IOException e) {
+                System.out.println("Файлът съществува , но не беше успешно отворен");
+            }
+        } else {
+            System.out.println("Файлът не съществува или не може да бъде прочетен");
+        }
+
+    }
+
+    public static void close(Path path , String fileName){
+        if(path == Paths.get("src/JSON_Files/" + fileName)) {
+            path = null;
+            System.out.println("Файлът е успешно затворен");
+        }
+        else{
+            System.out.println("Няма отворен файл с такова наименование");
+        }
+
+    }
 }
