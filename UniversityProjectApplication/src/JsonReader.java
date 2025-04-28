@@ -10,40 +10,11 @@ public class JsonReader {
     public static void main(String[] args) {
         {
             try {
-                //String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
-                //String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
-                //String content3 = new  String(Files.readAllBytes(Paths.get("src/JSON_Files/created.json")));
-                //Path path1 = Paths.get("src/JSON_Files/data.json");
-                //Path path = null;
-
-
-               // Map<String, String> jsonMap = parseJson(content3);
-
-                    //for (String key : jsonMap.keySet()) {
-                      //String value = jsonMap.get(key);
-                      // System.out.println(key + ": "+value);
-                   // }
-                String newContent = "{\n" +
-                        "  \"name\": \"Vasil Bojilov\",\n" +
-                        "  \"age\": 55,\n" +
-                        "  \"city\": \"Burgas\",\n" +
-                        "  \"country\": \"Bulgaria\"\n" +
-                        "}";
 
                 List<PathReference> listPathRef = new ArrayList<>();
                 PathReference pathRef = new PathReference(null);
 
-                //open(pathRef,"data.json");
-                //System.out.println(pathRef.location);
-                //close(pathRef,"data.json");
-                    //create(Paths.get("src/JSON_Files/created.json"),newContent);
-                //set(path1,newContent);
-                //validate(content2);
-                //set(jsonMap,"name","Kiril Petrov");
-                //createPath(jsonMap,"city","Sofia");
-                //deletePath(jsonMap,"name");
-                //search(jsonMap,"name");
-                //search(jsonMap,"city");
+
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("\nИзберете опция:");
                 System.out.println("Open FileName");
@@ -59,11 +30,18 @@ public class JsonReader {
                 System.out.println("Exit");
 
                 while (true) {
-                    // Print menu options
                     System.out.print("Напишете команда --> : ");
                     String input = scanner.nextLine();
                     String [] commands = input.split(" ");
                     switch (commands[0]) {
+                        case "Validate":
+                            if(commands.length>1) {
+                                validate(Paths.get("src\\" + commands[1]));
+                            }
+                            else{
+                                System.out.println("Напишете името на файла след 'Validate'");
+                            }
+                            break;
                         case "Open":
                             if(commands.length>1) {
                                 open(pathRef, commands[1], listPathRef);
@@ -158,12 +136,6 @@ public class JsonReader {
 
 
     public static void print(PathReference path) throws IOException {
-        /*String content = new  String(Files.readAllBytes(path.location));
-        Map<String, String> jsonMap = parseJson(content);
-        for (String key : jsonMap.keySet()) {
-            String value = jsonMap.get(key);
-            System.out.println(key + ": "+value);
-        }*/
 
         System.out.println(path.content);
     }
@@ -187,20 +159,109 @@ public class JsonReader {
         return map;
     }
 
-    public static void validate(String json){
-
-        json = json.trim().replaceAll("[{}\"]", "");
-        String[] pairs = json.split(",");
 
 
-        for (String pair : pairs) {
-            String[] keyValue = pair.split(":");
-            if (keyValue.length != 2) {
-               System.out.println("Invalid Json format at row : "+pair);
+    public static void validate(Path filePath){
+        if (!Files.exists(filePath)) {
+            System.out.println("Файлът не съществува.");
+            return;
+        }
+
+        try {
+            String content = Files.readString(filePath).trim();
+            content = content.replaceAll("\\s+","");
+
+            if (content.isEmpty()) {
+                System.out.println("Файлът няма съдържание.");
+                return;
             }
 
+
+            boolean isObject = content.startsWith("{") && content.endsWith("}");
+            boolean isArray = content.startsWith("[") && content.endsWith("]");
+
+            if (!(isObject || isArray)) {
+                System.out.println("Файлът трябва да започва и да завършва с еднакви знаци ('{' и '}' или '[' и ']')");
+                return;
+            }
+
+
+            int curly = 0;
+            int square = 0;
+            boolean inString = false;
+            boolean expectingKey = false;
+            boolean expectingColon = false;
+            boolean expectingValue = false;
+            boolean insideObject = false;
+
+            for (int i = 0; i < content.length(); i++) {
+                char c = content.charAt(i);
+
+                if (c == '"') {
+                    inString = !inString;
+                }
+
+                if (!inString) {
+                    if (c == '{') {
+                        curly++;
+                        insideObject = true;
+                        expectingKey = true;
+                    } else if (c == '}') {
+                        curly--;
+                        insideObject = false;
+                    } else if (c == '[') {
+                        square++;
+                    } else if (c == ']') {
+                        square--;
+                    } else if (c == ':') {
+                        if (!expectingColon) {
+                            System.out.println("Невалидна употреба на ':' на знак номер " + i);
+                            return ;
+                        }
+                        expectingColon = false;
+                        expectingValue = true;
+                    } else if (c == ',') {
+                        if (expectingColon) {
+                            System.out.println("Очаквана стойност преди ',' на знак номер " + i);
+                            return ;
+                        }
+                        if (insideObject) {
+                            expectingKey = true;
+                        }
+                    }
+                } else {
+                    if (expectingKey) {
+                        expectingKey = false;
+                        expectingColon = true;
+                    } else if (expectingValue) {
+                        expectingValue = false;
+                    }
+                }
+            }
+
+            if (curly != 0 || square != 0 || inString) {
+                System.out.println("Несъответстващи скоби или незатворен стринг.");
+                return ;
+            }
+
+            //content = content.replaceAll("\\s+","");
+            //System.out.println(content.charAt(1));
+            //System.out.println(content.charAt(content.length()-2));
+            if(content.charAt(1)==',' || content.charAt(content.length()-2)==','){
+                System.out.println("Файла не може да има ',' като втори или предпоследен знак.");
+                return ;
+            }
+
+        } catch (IOException e) {
+            System.out.println("Грешка при четенето на файла.");
+            return ;
         }
+
+            System.out.println("Файлът е във валиден JSON формат");
     }
+
+
+
 
     public static void search(PathReference path , String keyName) throws IOException {
         String content = new  String(Files.readAllBytes(path.location));
