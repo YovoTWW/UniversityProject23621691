@@ -3,6 +3,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class JsonReader {
@@ -53,6 +54,8 @@ public class JsonReader {
                 System.out.println("Save FileName");
                 System.out.println("SaveAs NewPathName FileName");
                 System.out.println("Create FileName NewContent");
+                System.out.println("Delete FileName");
+                System.out.println("Move FromFileName ToFileName");
                 System.out.println("Exit");
 
                 while (true) {
@@ -120,6 +123,23 @@ public class JsonReader {
                             else{
                                 System.out.println("Напишете името на файла и новото съдържание след 'Create'");
                             }
+                            break;
+                        case "Delete":
+                            if(commands.length>1) {
+                                delete(Paths.get("src\\" + commands[1]),listPathRef,true);
+                            }
+                            else{
+                                System.out.println("Напишете името на файла след 'Delete'");
+                            }
+                            break;
+                        case "Move":
+                            if(commands.length>2) {
+                                move(Paths.get("src\\" + commands[1]),Paths.get("src\\" + commands[2]));
+                            }
+                            else{
+                                System.out.println("Напишете името на първия и втория файл след 'Move'");
+                            }
+                            //Move JSON_FILES\blah.json JSON_FILES\new.json
                             break;
                         case "Exit":
                             System.out.println("Програмата беше затворена");
@@ -305,8 +325,22 @@ public class JsonReader {
                 System.out.println("JSON файлът с такъв път не е намерен.");
                 return;
             }
-            byte[] content = Files.readAllBytes(pathFrom);
-            Files.write(pathTo,content);
+            //byte[] content = Files.readAllBytes(pathFrom);
+            String contentFrom = Files.readString(pathFrom);
+            String contentTo = Files.readString(pathTo);
+
+            if (contentFrom.endsWith("}")) {
+                contentFrom = contentFrom.substring(0, contentFrom.length() - 1);
+            }
+
+            if (contentTo.startsWith("{")) {
+                contentTo = "," + contentTo.substring(1);
+            }
+
+            String mergedContent = contentFrom + contentTo;
+            byte[] mergedBytes = mergedContent.getBytes();
+            //Files.write(pathTo,content, StandardOpenOption.APPEND);
+            Files.write(pathTo,mergedBytes);
             Files.write(pathFrom,new byte[0]);
         }
         catch (IOException e) {
@@ -324,12 +358,24 @@ public class JsonReader {
                     path.location = pr.location;
                     path.content = pr.content;
                     ExistsInList = true;
-                    System.out.println("Called");
+                    System.out.println("Файлът е успешно отворен");
                 }
             }
             if(!ExistsInList) {
-                path.location = Paths.get("src/JSON_Files/" + fileName);
-                path.content = Files.readString(path.location);
+                if (Files.exists(Paths.get("src/JSON_Files/" + fileName)) && Files.isReadable(Paths.get("src/JSON_Files/" + fileName))) {
+                    try {
+                        path.location = Paths.get("src/JSON_Files/" + fileName);
+                        path.content = Files.readString(path.location);
+                        //String content = Files.readString(path.location);  // Opens and reads the file
+                        System.out.println("Файлът е успешно отворен");
+                        //System.out.println("Съдържание:\n" + content);
+                    } catch (IOException e) {
+                        System.out.println("Файлът съществува , но не беше успешно отворен");
+                    }
+                } else {
+                    System.out.println("Файлът не съществува или не може да бъде прочетен");
+                    return;
+                }
             }
         }
         else{
@@ -337,17 +383,6 @@ public class JsonReader {
             return;
         }
 
-        if (Files.exists(path.location) && Files.isReadable(path.location)) {
-            try {
-                String content = Files.readString(path.location);  // Opens and reads the file
-                System.out.println("Файлът е успешно отворен");
-                System.out.println("Съдържание:\n" + content);
-            } catch (IOException e) {
-                System.out.println("Файлът съществува , но не беше успешно отворен");
-            }
-        } else {
-            System.out.println("Файлът не съществува или не може да бъде прочетен");
-        }
 
     }
 
