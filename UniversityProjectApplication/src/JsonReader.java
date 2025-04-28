@@ -18,18 +18,20 @@ public class JsonReader {
 
                 Map<String, String> jsonMap = parseJson(content3);
 
-                    for (String key : jsonMap.keySet()) {
-                       String value = jsonMap.get(key);
-                       System.out.println(key + ": "+value);
-                    }
+                  //  for (String key : jsonMap.keySet()) {
+                   //   String value = jsonMap.get(key);
+                   //    System.out.println(key + ": "+value);
+                   // }
                 String newContent = "{\n" +
                         "  \"name\": \"Vasil Bojilov\",\n" +
                         "  \"age\": 55,\n" +
                         "  \"city\": \"Burgas\",\n" +
                         "  \"country\": \"Bulgaria\"\n" +
                         "}";
-                open(path,"data.json");
-                close(path,"data.json");
+                PathReference pathRef = new PathReference(null);
+                open(pathRef,"data.json");
+                //System.out.println(pathRef.location);
+                close(pathRef,"data.json");
                     //create(Paths.get("src/JSON_Files/created.json"),newContent);
                 //set(path1,newContent);
                 //validate(content2);
@@ -157,18 +159,18 @@ public class JsonReader {
         }
     }
 
-    public static void open(Path path , String fileName){
-        if(path == null) {
-            path = Paths.get("src/JSON_Files/" + fileName);
+    public static void open(PathReference path , String fileName){
+        if(path.location == null) {
+            path.location = Paths.get("src/JSON_Files/" + fileName);
         }
         else{
             System.out.println("Дръг файл е отворен . Затворете отвореният файл , за да може да отворите друг файл.");
             return;
         }
 
-        if (Files.exists(path) && Files.isReadable(path)) {
+        if (Files.exists(path.location) && Files.isReadable(path.location)) {
             try {
-                String content = Files.readString(path);  // Opens and reads the file
+                String content = Files.readString(path.location);  // Opens and reads the file
                 System.out.println("Файлът е успешно отворен");
                 System.out.println("Съдържание:\n" + content);
             } catch (IOException e) {
@@ -180,12 +182,14 @@ public class JsonReader {
 
     }
 
-    public static void close(Path path , String fileName){
-        if(path == Paths.get("src/JSON_Files/" + fileName)) {
-            path = null;
+    public static void close(PathReference path , String fileName){
+        if(path.location.equals(Paths.get("src\\JSON_Files\\" + fileName))) {
+            path.location = null;
             System.out.println("Файлът е успешно затворен");
         }
         else{
+            //System.out.println("Given path: " + path.location);
+            //System.out.println("Expected path: "+"src\\JSON_Files\\" + fileName);
             System.out.println("Няма отворен файл с такова наименование");
         }
 
