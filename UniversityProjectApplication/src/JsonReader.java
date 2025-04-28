@@ -51,6 +51,8 @@ public class JsonReader {
                 System.out.println("Search KeyName");
                 System.out.println("Set FileName NewContent");
                 System.out.println("Save FileName");
+                System.out.println("SaveAs NewPathName FileName");
+                System.out.println("Create FileName NewContent");
                 System.out.println("Exit");
 
                 while (true) {
@@ -98,6 +100,25 @@ public class JsonReader {
                             }
                             else{
                                 System.out.println("Напишете името на файла след 'Save'");
+                            }
+                            break;
+                        case "SaveAs":
+                            if(commands.length>2) {
+                                saveAs(commands[2],commands[1],listPathRef);
+                            }
+                            else{
+                                System.out.println("Напишете новата локация и името на файла след 'SaveAs'");
+                            }
+                            break;
+                        case "Create":
+                            if(commands.length>2) {
+                                String[] content = Arrays.copyOfRange(commands,2,commands.length);
+                                String result = String.join(" ",content);
+                                create(Paths.get("src\\JSON_Files\\" + commands[1]), result);
+                            }
+                            //Create new.json {"name" : "Pesho","age" : "47"}
+                            else{
+                                System.out.println("Напишете името на файла и новото съдържание след 'Create'");
                             }
                             break;
                         case "Exit":
@@ -225,6 +246,29 @@ public class JsonReader {
         }
     }
 
+    public static void saveAs(String fileName,String newPathName,List<PathReference> list) throws IOException {
+        Path filePath = Paths.get("src\\"+newPathName+"\\"+fileName);
+        Path originalLocation = Paths.get("src\\JSON_Files\\" + fileName);
+        String fileContent = Files.readString(originalLocation);
+        for(PathReference pr : list){
+            if(pr.location.equals(originalLocation)){
+                //filePath = pr.location;
+                fileContent = pr.content;
+            }
+        }
+        if (filePath != null && fileContent != null) {
+            try {
+                delete(originalLocation,list,false);
+                Files.write(filePath, fileContent.getBytes());
+                System.out.println("Промените бяха запазени във файла.");
+            } catch (IOException e) {
+                System.out.println("Грешка при запазването на файла.");
+            }
+        } else {
+            System.out.println("Няма файл за запазване.");
+        }
+    }
+
     public static void create(Path filePath , String newContent){
         if (Files.exists(filePath)) {
             System.out.println("JSON файлът с тавък път вече съществува.");
@@ -239,11 +283,14 @@ public class JsonReader {
         }
     }
 
-    public static void delete(Path filePath ){
+    public static void delete(Path filePath , List<PathReference> list ,Boolean sendMessage){
         if (Files.exists(filePath)) {
             try {
                 Files.delete(filePath);
-                System.out.println("JSON файлът беше изтрит успешно.");
+                if(sendMessage) {
+                    System.out.println("JSON файлът беше изтрит успешно.");
+                }
+                list.removeIf(PathRef -> PathRef.location.equals(filePath));
             } catch (IOException e) {
                 System.out.println("Грешка при изтриването на JSON файлът.");
             }
