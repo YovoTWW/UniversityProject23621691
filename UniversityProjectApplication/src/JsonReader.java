@@ -9,18 +9,18 @@ public class JsonReader {
     public static void main(String[] args) {
         {
             try {
-                String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
-                String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
-                String content3 = new  String(Files.readAllBytes(Paths.get("src/JSON_Files/created.json")));
-                Path path1 = Paths.get("src/JSON_Files/data.json");
-                Path path = null;
+                //String content1 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/data.json")));
+                //String content2 = new String(Files.readAllBytes(Paths.get("src/JSON_Files/invalid.json")));
+                //String content3 = new  String(Files.readAllBytes(Paths.get("src/JSON_Files/created.json")));
+                //Path path1 = Paths.get("src/JSON_Files/data.json");
+                //Path path = null;
 
 
-                Map<String, String> jsonMap = parseJson(content3);
+               // Map<String, String> jsonMap = parseJson(content3);
 
-                  //  for (String key : jsonMap.keySet()) {
-                   //   String value = jsonMap.get(key);
-                   //    System.out.println(key + ": "+value);
+                    //for (String key : jsonMap.keySet()) {
+                      //String value = jsonMap.get(key);
+                      // System.out.println(key + ": "+value);
                    // }
                 String newContent = "{\n" +
                         "  \"name\": \"Vasil Bojilov\",\n" +
@@ -29,9 +29,9 @@ public class JsonReader {
                         "  \"country\": \"Bulgaria\"\n" +
                         "}";
                 PathReference pathRef = new PathReference(null);
-                open(pathRef,"data.json");
+                //open(pathRef,"data.json");
                 //System.out.println(pathRef.location);
-                close(pathRef,"data.json");
+                //close(pathRef,"data.json");
                     //create(Paths.get("src/JSON_Files/created.json"),newContent);
                 //set(path1,newContent);
                 //validate(content2);
@@ -40,7 +40,36 @@ public class JsonReader {
                 //deletePath(jsonMap,"name");
                 //search(jsonMap,"name");
                 //search(jsonMap,"city");
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("\nИзберете опция:");
+                System.out.println("Open FileName");
+                System.out.println("Close FileName");
+                System.out.println("Print");
+                System.out.println("Exit");
 
+                while (true) {
+                    // Print menu options
+                    System.out.print("Напишете команда --> : ");
+                    String input = scanner.nextLine();
+                    String [] commands = input.split(" ");
+                    switch (commands[0]) {
+                        case "Open":
+                            open(pathRef,commands[1]);
+                            break;
+                        case "Close":
+                            close(pathRef,commands[1]);
+                            break;
+                        case "Print":
+                            print(pathRef);
+                            break;
+                        case "Exit":
+                            System.out.println("Програмата беше затворена");
+                            scanner.close();
+                            return; // Exit the program
+                        default:
+                            System.out.println("Invalid option. Try again.");
+                    }
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -49,7 +78,16 @@ public class JsonReader {
     }
 
 
-
+    public static void print(PathReference path) throws IOException {
+        /*String content = new  String(Files.readAllBytes(path.location));
+        Map<String, String> jsonMap = parseJson(content);
+        for (String key : jsonMap.keySet()) {
+            String value = jsonMap.get(key);
+            System.out.println(key + ": "+value);
+        }*/
+        String content = Files.readString(path.location);
+        System.out.println(content);
+    }
 
 
 
