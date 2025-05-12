@@ -29,9 +29,15 @@ public class JsonReader {
                 System.out.println("Move FromFileName ToFileName");
                 System.out.println("Help");
                 System.out.println("Exit");*/
+                BasicWriter basicWriter = new BasicWriter();
+                ContentExtendedWriter contentExtendedWriter = new ContentExtendedWriter();
+                LocationExtendedWriter locationExtendedWriter = new LocationExtendedWriter();
+                TwoFileWriter twoFileWriter = new TwoFileWriter();
+                FullWriter fullWriter = new FullWriter();
 
                 while (true) {
-                    System.out.print("Напишете команда --> : ");
+                    //System.out.print("Напишете команда --> : ");
+                    fullWriter.FullWrite("Напишете команда --> : ");
                     String input = scanner.nextLine();
                     String [] commands = input.split(" ");
                     switch (commands[0]) {
@@ -40,7 +46,8 @@ public class JsonReader {
                                 validate(Paths.get("src\\" + commands[1]));
                             }
                             else{
-                                System.out.println("Напишете името на файла след 'Validate'");
+                                //System.out.println("Напишете името на файла след 'Validate'");
+                                basicWriter.Write("Validate");
                             }
                             break;
                         case "Open":
@@ -48,7 +55,8 @@ public class JsonReader {
                                 open(pathRef, commands[1], listPathRef);
                             }
                             else{
-                                System.out.println("Напишете името на файла след 'Open'");
+                                //System.out.println("Напишете името на файла след 'Open'");
+                                basicWriter.Write("Open");
                             }
                             break;
                         case "Close":
@@ -56,7 +64,8 @@ public class JsonReader {
                                 close(pathRef, commands[1]);
                             }
                             else{
-                                System.out.println("Напишете името на файла след 'Close'");
+                                //System.out.println("Напишете името на файла след 'Close'");
+                                basicWriter.Write("Close");
                             }
                             break;
                         case "Print":
@@ -73,7 +82,8 @@ public class JsonReader {
                             }
                             //Set invalid.json {"name" : "Pesho","age" : "47"}
                             else{
-                                System.out.println("Напишете името на файла и новото съдържание след 'Set'");
+                                //System.out.println("Напишете името на файла и новото съдържание след 'Set'");
+                                contentExtendedWriter.Write("Set");
                             }
                             break;
                         case "Save":
@@ -81,7 +91,8 @@ public class JsonReader {
                                 save(commands[1],listPathRef);
                             }
                             else{
-                                System.out.println("Напишете името на файла след 'Save'");
+                                //System.out.println("Напишете името на файла след 'Save'");
+                                basicWriter.Write("Save");
                             }
                             break;
                         case "SaveAs":
@@ -89,7 +100,8 @@ public class JsonReader {
                                 saveAs(commands[2],commands[1],listPathRef);
                             }
                             else{
-                                System.out.println("Напишете новата локация и името на файла след 'SaveAs'");
+                                //System.out.println("Напишете новата локация и името на файла след 'SaveAs'");
+                                locationExtendedWriter.Write("SaveAs");
                             }
                             break;
                         case "Create":
@@ -100,7 +112,8 @@ public class JsonReader {
                             }
                             //Create new.json {"name" : "Pesho","age" : "47"}
                             else{
-                                System.out.println("Напишете името на файла и новото съдържание след 'Create'");
+                                //System.out.println("Напишете името на файла и новото съдържание след 'Create'");
+                                contentExtendedWriter.Write("Create");
                             }
                             break;
                         case "Delete":
@@ -108,7 +121,8 @@ public class JsonReader {
                                 delete(Paths.get("src\\" + commands[1]),listPathRef,true);
                             }
                             else{
-                                System.out.println("Напишете името на файла след 'Delete'");
+                                //System.out.println("Напишете името на файла след 'Delete'");
+                                basicWriter.Write("Delete");
                             }
                             break;
                         case "Move":
@@ -116,7 +130,8 @@ public class JsonReader {
                                 move(Paths.get("src\\" + commands[1]),Paths.get("src\\" + commands[2]));
                             }
                             else{
-                                System.out.println("Напишете името на първия и втория файл след 'Move'");
+                                //System.out.println("Напишете името на първия и втория файл след 'Move'");
+                                twoFileWriter.Write("Move");
                             }
                             //Move JSON_FILES\blah.json JSON_FILES\new.json
                             break;
@@ -124,11 +139,13 @@ public class JsonReader {
                             help();
                             break;
                         case "Exit":
-                            System.out.println("Програмата беше затворена");
+                            //System.out.println("Програмата беше затворена");
+                            fullWriter.FullWrite("Програмата беше затворена");
                             scanner.close();
                             return; // Exit the program
                         default:
-                            System.out.println("Invalid option. Try again.");
+                            //System.out.println("Невалидна опция. Опитайте отново.");
+                            fullWriter.FullWrite("Невалидна опция. Опитайте отново.");
                     }
                 }
 
