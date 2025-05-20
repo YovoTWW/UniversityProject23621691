@@ -201,6 +201,7 @@ public class JsonReader {
         System.out.println("Create FileName NewContent -> Създава се нов файл с ново съдържание по дадено име на файл и по дадено съдържание");
         System.out.println("Delete FileName -> Изтрива се файл по дадено име на файл");
         System.out.println("Move FromFileName ToFileName -> Данните от първия файл даден по име се преместват във втория файл по дадено име");
+        System.out.println("Validate FileName -> Валидира се съдържанието на файл са дадно име , като се проверява дали има правилен JSON синтаксис");
         System.out.println("Help -> Отваря менюто с обяснение на командите");
         System.out.println("Exit -> Излиза от програмата");
     }
@@ -511,7 +512,6 @@ public class JsonReader {
             System.out.println("Дръг файл е отворен . Затворете отвореният файл , за да може да отворите друг файл.");
             return;
         }
-
 
     }
 
