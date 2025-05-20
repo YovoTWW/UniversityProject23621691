@@ -14,19 +14,6 @@ public class JsonReader {
 
 
                 Scanner scanner = new Scanner(System.in);
-                /*System.out.println("\nИзберете опция:");
-                System.out.println("Open FileName");
-                System.out.println("Close FileName");
-                System.out.println("Print");
-                System.out.println("Search KeyName");
-                System.out.println("Set FileName NewContent");
-                System.out.println("Save FileName");
-                System.out.println("SaveAs NewPathName FileName");
-                System.out.println("Create FileName NewContent");
-                System.out.println("Delete FileName");
-                System.out.println("Move FromFileName ToFileName");
-                System.out.println("Help");
-                System.out.println("Exit");*/
                 BasicWriter basicWriter = new BasicWriter();
                 ContentExtendedWriter contentExtendedWriter = new ContentExtendedWriter();
                 LocationExtendedWriter locationExtendedWriter = new LocationExtendedWriter();
@@ -234,10 +221,10 @@ public class JsonReader {
             int curly = 0;
             int square = 0;
             boolean inString = false;
-            boolean expectingKey = false;
-            boolean expectingColon = false;
-            boolean expectingValue = false;
-            boolean insideObject = false;
+            //boolean expectingKey = false;
+            //boolean expectingColon = false;
+            //boolean expectingValue = false;
+            //boolean insideObject = false;
 
             for (int i = 0; i < content.length(); i++) {
                 char c = content.charAt(i);
@@ -249,16 +236,18 @@ public class JsonReader {
                 if (!inString) {
                     if (c == '{') {
                         curly++;
-                        insideObject = true;
-                        expectingKey = true;
+                        //insideObject = true;
+                        //expectingKey = true;
                     } else if (c == '}') {
                         curly--;
-                        insideObject = false;
+                        //insideObject = false;
                     } else if (c == '[') {
                         square++;
                     } else if (c == ']') {
                         square--;
-                    } else if (c == ':') {
+                    }
+                }
+            }/*else if (c == ':') {
                         if (!expectingColon) {
                             System.out.println("Невалидна употреба на ':' на знак номер " + i);
                             return ;
@@ -282,20 +271,21 @@ public class JsonReader {
                         expectingValue = false;
                     }
                 }
-            }
+            }*/
 
-            if (curly != 0 || square != 0 || inString) {
-                System.out.println("Несъответстващи скоби или незатворен стринг.");
-                return ;
-            }
+                    if (curly != 0 || square != 0 || inString) {
+                        System.out.println("Несъответстващи скоби или незатворен стринг.");
+                        return;
+                    }
 
-            //content = content.replaceAll("\\s+","");
-            //System.out.println(content.charAt(1));
-            //System.out.println(content.charAt(content.length()-2));
-            if(content.charAt(1)==',' || content.charAt(content.length()-2)==','){
-                System.out.println("Файла не може да има ',' като втори или предпоследен знак.");
-                return ;
-            }
+                    //content = content.replaceAll("\\s+","");
+                    //System.out.println(content.charAt(1));
+                    //System.out.println(content.charAt(content.length()-2));
+                    if (content.charAt(1) == ',' || content.charAt(content.length() - 2) == ',') {
+                        System.out.println("Файла не може да има ',' като втори или предпоследен знак.");
+                        return;
+                    }
+
 
         } catch (IOException e) {
             System.out.println("Грешка при четенето на файла.");
