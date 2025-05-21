@@ -57,7 +57,12 @@ public class JsonReader {
                             print(pathRef);
                             break;
                         case "Search":
-                            search(pathRef,commands[1]);
+                            if(commands.length>1) {
+                                search(pathRef,commands[1]);
+                            }
+                            else{
+                                fullWriter.FullWrite("Напишете името на ключа след 'Search'");
+                            }
                             break;
                         case "Set":
                             if(commands.length>2) {
